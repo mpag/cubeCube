@@ -14,10 +14,23 @@
 		<script src="js/basicSetup.js"></script>
 		<script src="js/lightSetup.js"></script>
 		<script src="js/geomSetup.js"></script>
-		<script src="js/renderSetup.js"></script>
+		<script type="text/javascript">
 
-		<a-scene>
+		function render() {
+			requestAnimationFrame( render );
 
-		</a-scene>
+			cube.rotation.x += 0.02;
+			cube.rotation.y += 0.02;
+			cube2.rotation.x += -0.02;
+			cube2.rotation.y += -0.02;
+			terrain.rotation.z += 0.01;
+
+			renderer.render( scene, camera );
+		};
+
+		render();
+
+
+		</script>
 	</body>
 </html>
