@@ -1,9 +1,6 @@
 var spotLight = new THREE.SpotLight( 0xffffff );
 spotLight.position.set( 100, 1000, 100 );
 
-var spotLightHelper = new THREE.SpotLightHelper( spotLight );
-scene.add( spotLightHelper );
-
 var light = new THREE.AmbientLight( 0x404040 ); // soft white light
 scene.add( light );
 
