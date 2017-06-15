@@ -37,7 +37,7 @@ function init()
 	var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
 	camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
 	scene.add(camera);
-	camera.position.set(0,150,400);
+	camera.position.set(1300,1400,3800);
 	camera.lookAt(scene.position);
 	
 	//////////////
@@ -50,6 +50,8 @@ function init()
 	else
 		renderer = new THREE.CanvasRenderer();
 	
+	renderer.shadowMapEnabled = true;
+	// renderer.shadowMapType = THREE.PCFSoftShadowMap;
 	renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 	
 	// attach div element to variable to contain the renderer
@@ -90,11 +92,16 @@ function init()
 	///////////
 	
 	// create a light
-	var light = new THREE.PointLight(0xffffff);
-	light.position.set(0,250,0);
-	scene.add(light);
+	var light = new THREE.SpotLight(0xffffff);
+	var light1 = new THREE.SpotLight(0xffffff);
+	light.position.set(300,300,0);
+	light1.position.set(-300,300,0);
+	light.castShadow = true;
+	light1.castShadow = true;
+	scene.add(light,light1);
 	var ambientLight = new THREE.AmbientLight(0x111111);
 	scene.add(ambientLight);
+
 	
 	//////////////
 	// GEOMETRY //
@@ -111,22 +118,37 @@ function init()
 	var material = new THREE.MeshPhongMaterial( { map: imgTexture, bumpMap: imgBumpTexture, bumpScale: 0.01, side: THREE.DoubleSide});
 
 	//Geom Definition
-	cube = new THREE.Mesh( boxGeometry, material );
-	cube.position.set(-50,45,0)
 
-	cube2 = new THREE.Mesh( boxGeometry, material );
-	cube2.position.set(50,45,0)
-
-	var geometryTerrain = new THREE.PlaneGeometry( 500, 500, 256, 256 );
+	var geometryTerrain = new THREE.PlaneGeometry( 2800, 2800, 256, 256 );
 	terrain = new THREE.Mesh( geometryTerrain, material );
 	terrain.rotation.x = Math.PI / -2;
+	terrain.receiveShadow = true;
+	terrain.castShadow = true;
+
+	var numpoints = 2000;
+	var dots = [];
+	cubes = [];
+
+	for (var i = 0 ; i < numpoints ; i++) {
+	    var x = Math.random() * (10000) - 5000 //Math.random() * (max - min) + min
+	    var y = Math.random() * 200 + 50
+	    var z = Math.random() * (10000) - 5000
+	    var dotGeometry = new THREE.Geometry();
+	    dots.push(dotGeometry);
+	    dotGeometry.vertices.push(new THREE.Vector3(x, y, z)); 
+	    cube2 = new THREE.Mesh( boxGeometry, material);
+	    cube2.position.x = x;
+	    cube2.position.y = y;
+	    cube2.position.z = z;
+	    cube2.castShadow = true;
+	    cube2.receiveShadow = true;
+	    cubes.push(cube2);
+	    scene.add(cube2);
+	};
 
 	//Addition to Scene
-	scene.add(cube,cube2,terrain);	
+	scene.add(terrain);	
 
-/*	var axes = new THREE.AxisHelper(100);
-	scene.add( axes );*/
-	
 
 	/////////
 	// SKY //
@@ -138,13 +160,8 @@ function init()
 	// make sure the camera's "far" value is large enough so that it will render the skyBox!
 	var skyBoxGeometry = new THREE.CubeGeometry( 10000, 10000, 10000 );
 	// BackSide: render faces from inside of the cube, instead of from outside (default).
-	var skyBoxMaterial = new THREE.MeshBasicMaterial( { 
-		map: imgTexture,
-		bumpMap: imgBumpTexture,
-		bumpScale: 0.01,
-		side: THREE.DoubleSide
-	});
-	var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
+	var skyBoxMaterial = new THREE.MeshStandardMaterial( { map: imgTexture, side: THREE.DoubleSide});
+	skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
 	scene.add(skyBox);
 	
 	// // fog must be added to scene before first render
@@ -162,20 +179,21 @@ function update()
 {
 	// delta = change in time since last call (in seconds)
 	var delta = clock.getDelta(); 
-
 	terrain.rotation.z += 0.005;
-	cube2.rotation.z += 0.005;
-	cube2.rotation.x += 0.005;
-	cube2.rotation.y += 0.005;
-	cube.rotation.z += -0.005;
-	cube.rotation.x += -0.005;
-	cube.rotation.y += -0.005;
+	for (var i = 0 ; i < (cubes.length) ; i++){
+	var num1 = Math.random()*(0.1-0.001)+0.001;
+	var num2 = Math.random()*(0.1-0.001)+0.001;
+	var num3 = Math.random()*(0.1-0.001)+0.001;
+	cubes[i].rotation.z += num1;
+	cubes[i].rotation.x += num2;
+	cubes[i].rotation.y += num3;
+	};
 
-	// functionality provided by THREEx.KeyboardState.js
-	if ( keyboard.pressed("1") )
-		document.getElementById('message').innerHTML = ' Have a nice day! - 1';	
-	if ( keyboard.pressed("2") )
-		document.getElementById('message').innerHTML = ' Have a nice day! - 2 ';	
+	// // functionality provided by THREEx.KeyboardState.js
+	// if ( keyboard.pressed("1") )
+	// 	document.getElementById('message').innerHTML = ' Have a nice day! - 1';	
+	// if ( keyboard.pressed("2") )
+	// 	document.getElementById('message').innerHTML = ' Have a nice day! - 2 ';	
 
 	controls.update();
 	stats.update();
