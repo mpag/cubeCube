@@ -4,47 +4,36 @@
 
 // standard global variables
 var container, scene, camera, renderer, controls, stats;
-var keyboard = new THREEx.KeyboardState();
-var clock = new THREE.Clock();
+var keyboard = new threex.keyboardstate();
+var clock = new three.Clock();
 
 // custom global variables
 var cube;
+var counter
 
 // initialization
 init();
 
-// animation loop / game loop
+// animation loop
 animate();
 
-///////////////
-// FUNCTIONS //
-///////////////
+// FUNCTIONS
 			
 function init() 
 {
-	///////////
-	// SCENE //
-	///////////
+	// SCENE
 	scene = new THREE.Scene();
 
-	////////////
-	// CAMERA //
-	////////////
-	
+	//////// CAMERA //////////
 	var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
-
 	// camera attributes
-	var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
+	var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 100000;
 	camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
 	scene.add(camera);
-	camera.position.set(1300,1400,3800);
-	camera.lookAt(scene.position);
+	camera.position.set(-900,250,600);
+	camera.lookAt(camera.position);
 	
-	//////////////
-	// RENDERER //
-	//////////////
-	
-	// create and start the renderer; choose antialias setting.
+	///////// RENDERER /////////
 	if ( Detector.webgl )
 		renderer = new THREE.WebGLRenderer( {antialias:true} );
 	else
@@ -53,45 +42,33 @@ function init()
 	renderer.shadowMapEnabled = true;
 	// renderer.shadowMapType = THREE.PCFSoftShadowMap;
 	renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-	
 	// attach div element to variable to contain the renderer
 	container = document.getElementById( 'ThreeJS' );
-	
 	// attach renderer to the container div
 	container.appendChild( renderer.domElement );
 	
-	////////////
-	// EVENTS //
-	////////////
-
+	////////// EVENTS //////////
 	// automatically resize renderer
 	THREEx.WindowResize(renderer, camera);
 	
-	//////////////
-	// CONTROLS //
-	//////////////
-
-	// move mouse and: left   click to rotate, 
-	//                 middle click to zoom, 
-	//                 right  click to pan
+	///////// CONTROLS /////////
 	controls = new THREE.OrbitControls( camera, renderer.domElement );
+	controls.enableDamping = true;
+	controls.dampingFactor = 0.40;
+	controls.constraint.smoothZoom = true;
+	controls.constraint.zoomDampingFactor = 0.2;
+	controls.constraint.smoothZoomSpeed = 5.0;
 	
-	///////////
-	// STATS //
-	///////////
-	
+	///////// STATS/////////
 	// displays current and past frames per second attained by scene
-	stats = new Stats();
-	stats.domElement.style.position = 'absolute';
-	stats.domElement.style.bottom = '0px';
-	stats.domElement.style.zIndex = 100;
-	container.appendChild( stats.domElement );
+	// stats = new Stats();
+	// stats.domElement.style.position = 'absolute';
+	// stats.domElement.style.bottom = '0px';
+	// stats.domElement.style.zIndex = 100;
+	// container.appendChild( stats.domElement );
 	
-	///////////
-	// LIGHT //
-	///////////
-	
-	// create a light
+	////////// LIGHT /////////
+
 	var light = new THREE.SpotLight(0xffffff);
 	var light1 = new THREE.SpotLight(0xffffff);
 	light.position.set(300,300,0);
@@ -102,10 +79,7 @@ function init()
 	var ambientLight = new THREE.AmbientLight(0x111111);
 	scene.add(ambientLight);
 
-	
-	//////////////
-	// GEOMETRY //
-	//////////////	
+	//////// GEOMETRY /////////
 
 	//Base Geom
 	var boxGeometry = new THREE.BoxGeometry( 50, 50, 50);
@@ -115,10 +89,9 @@ function init()
 	imgTexture.wrapS = imgTexture.wrapT = THREE.RepeatWrapping;
 	var imgBumpTexture = new THREE.ImageUtils.loadTexture( "UV.jpg" );
 	imgBumpTexture.wrapS = imgBumpTexture.wrapT = THREE.RepeatWrapping;
-	var material = new THREE.MeshPhongMaterial( { map: imgTexture, bumpMap: imgBumpTexture, bumpScale: 0.01, side: THREE.DoubleSide});
+	var material = new THREE.MeshPhongMaterial( { diffuse: 0xFFFFFF, bumpMap: imgBumpTexture, bumpScale: 0.01, side: THREE.DoubleSide});
 
 	//Geom Definition
-
 	var geometryTerrain = new THREE.PlaneGeometry( 2800, 2800, 256, 256 );
 	terrain = new THREE.Mesh( geometryTerrain, material );
 	terrain.rotation.x = Math.PI / -2;
@@ -150,23 +123,15 @@ function init()
 	scene.add(terrain);	
 
 
-	/////////
-	// SKY //
-	/////////
-	
-	// recommend either a skybox or fog effect (can't use both at the same time) 
-	// without one of these, the scene's background color is determined by webpage background
+	//////// SKY /////////////
 
-	// make sure the camera's "far" value is large enough so that it will render the skyBox!
-	var skyBoxGeometry = new THREE.CubeGeometry( 10000, 10000, 10000 );
-	// BackSide: render faces from inside of the cube, instead of from outside (default).
-	var skyBoxMaterial = new THREE.MeshStandardMaterial( { map: imgTexture, side: THREE.DoubleSide});
+	var skyBoxGeometry = new THREE.CubeGeometry( 20000, 20000, 20000 );
+	var skyBoxMaterial = new THREE.MeshStandardMaterial( { diffuse: 0xFFFFFF, side: THREE.DoubleSide});
 	skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
 	scene.add(skyBox);
-	
-	// // fog must be added to scene before first render
 	// scene.fog = new THREE.FogExp2( 0x9999ff, 0.00025 );
 }
+
 
 function animate() 
 {
@@ -175,18 +140,24 @@ function animate()
 	update();
 }
 
+
 function update()
 {
 	// delta = change in time since last call (in seconds)
 	var delta = clock.getDelta(); 
 	terrain.rotation.z += 0.005;
+	skyBox.rotation.z += -0.005;
+	skyBox.rotation.x += -0.005;
+
+
+
 	for (var i = 0 ; i < (cubes.length) ; i++){
-	var num1 = Math.random()*(0.1-0.001)+0.001;
-	var num2 = Math.random()*(0.1-0.001)+0.001;
-	var num3 = Math.random()*(0.1-0.001)+0.001;
-	cubes[i].rotation.z += num1;
-	cubes[i].rotation.x += num2;
-	cubes[i].rotation.y += num3;
+		var num1 = Math.random()*(0.05-0.001)+0.001;
+		var num2 = Math.random()*(0.05-0.001)+0.001;
+		var num3 = Math.random()*(0.05-0.001)+0.001;
+		cubes[i].rotation.z += num1;
+		cubes[i].rotation.x += num2;
+		cubes[i].rotation.y += num3;
 	};
 
 	// // functionality provided by THREEx.KeyboardState.js
@@ -196,8 +167,9 @@ function update()
 	// 	document.getElementById('message').innerHTML = ' Have a nice day! - 2 ';	
 
 	controls.update();
-	stats.update();
+	// stats.update();
 }
+
 
 function render() 
 {	

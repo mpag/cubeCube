@@ -4,23 +4,36 @@
 		<meta charset=utf-8>
 		<title>My first three.js app. Which sucks</title>
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<style>
-			body { margin: 0; }
-			canvas { width: 50%; height: 50% }
+		<style type="text/css">
+		h1 {
+			display: block;
+			font-family: century;
+			color: #FFFFFF;
+			font-size: 2em;
+			margin-top: 0.1em;
+			margin-bottom: 0.1em;
+		}
+		::-webkit-scrollbar { 
+    	display: none; 
+}
 		</style>
-		<script src="js/three.js"></script>
-		<script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
-</head>
+	</head>
 	<body>
-		<script src="js/Three.js"></script>
+		<script src="js/three.js"></script>
 		<script src="js/Detector.js"></script>
-		<script src="js/Stats.js"></script>
+		<script src="js/stats.js"></script>
 		<script src="js/OrbitControls.js"></script>
-		<script src="js/THREEx.KeyboardState.js"></script>
-		<script src="js/THREEx.WindowResize.js"></script>
+		<script src="js/threex.keyboardstate.js"></script>
+		<script src="js/threex.windowresize.js"></script>
 
 		<div id="ThreeJS" style="z-index: 1; position: absolute; left:0px; top:0px; background:white"></div>
 
-		<script src="js/basicSetup.js"></script>		
+		<script src="js/basicSetup.js"></script>	
+		
+		<div id="textContent" style="z-index: 100; position: fixed; left:100px; top:100px; width:400px;">
+			<div id="title" style="position: relative;"><h1>.theCubeCube</h1></div>
+			<div id="subheading" style="position: relative; font-family:arial; font-size:0.5em; color:#FFFFFF;"><h3>explorations in THREE.js</h3></div>
+			<div id="paragraph" style="position: relative; width:200px; height:200px; font-family:arial; font-size:0.5em; overflow:scroll; color:#FFFFFF;"><p>Alibea doluptis as si dolupta tessim net aut et am reptatq uaersperunt, quam deles nobitatur sit utem recullaccus errum eaquatum id qui omnisqui non consent, simporeriae velent liquam ex expellantur, ulpa voluptatur, a simustiame est, nus, cum aut ditios autem invento evelias quunto blab imillab orerspel isim quam id qui qui. <br><br> Alibea doluptis as si dolupta tessim net aut et am reptatq uaersperunt, quam deles nobitatur sit utem recullaccus errum eaquatum id qui omnisqui non consent, simporeriae velent liquam ex expellantur, ulpa voluptatur, a simustiame est, nus, cum aut ditios autem invento evelias quunto blab imillab orerspel isim quam id qui qui <br><br> Alibea doluptis as si dolupta tessim net aut et am reptatq uaersperunt, quam deles nobitatur sit utem recullaccus errum eaquatum id qui omnisqui non consent, simporeriae velent liquam ex expellantur, ulpa voluptatur, a simustiame est, nus, cum aut ditios autem invento evelias quunto blab imillab orerspel isim quam id qui qui  <br><br> Alibea doluptis as si dolupta tessim net aut et am reptatq uaersperunt, quam deles nobitatur sit utem recullaccus errum eaquatum id qui omnisqui non consent, simporeriae velent liquam ex expellantur, ulpa voluptatur, a simustiame est, nus, cum aut ditios autem invento evelias quunto blab imillab orerspel isim quam id qui qui  <br><br> Alibea doluptis as si dolupta tessim net aut et am reptatq uaersperunt, quam deles nobitatur sit utem recullaccus errum eaquatum id qui omnisqui non consent, simporeriae velent liquam ex expellantur, ulpa voluptatur, a simustiame est, nus, cum aut ditios autem invento evelias quunto blab imillab orerspel isim quam id qui qui</p></div>		
+		</div>
 	</body>
 </html>
