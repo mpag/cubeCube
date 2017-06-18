@@ -4,8 +4,7 @@
 
 // standard global variables
 var container, scene, camera, renderer, controls, stats;
-var keyboard = new threex.keyboardstate();
-var clock = new three.Clock();
+var clock = new THREE.Clock();
 
 // custom global variables
 var cube;
@@ -55,9 +54,6 @@ function init()
 	controls = new THREE.OrbitControls( camera, renderer.domElement );
 	controls.enableDamping = true;
 	controls.dampingFactor = 0.40;
-	controls.constraint.smoothZoom = true;
-	controls.constraint.zoomDampingFactor = 0.2;
-	controls.constraint.smoothZoomSpeed = 5.0;
 	
 	///////// STATS/////////
 	// displays current and past frames per second attained by scene
